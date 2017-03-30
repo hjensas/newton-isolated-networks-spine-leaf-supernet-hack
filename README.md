@@ -1,7 +1,13 @@
 # newton-isolated-networks-spine-leaf-supernet-hack
-Deploy Openstack newton with routed isolated networks, using custom roles. No tripleo-heat-teamplates customization required.
+Deploy Openstack newton with routed isolated networks, using custom roles. No
+tripleo-heat-teamplates customization required.
 
-Network environment files in this repo is an example showing how one can trick Triple-O into deploying overcloud with routed (spine-leaf) networks on the isolated networks. This is done by utilizing the custom role feature introduces in Openstack Newton. One custom compute role is created per _leaf_ each with a role specific nic-config template that configures the correct ip, netmask and static routes on overcloud nodes.
+Network environment files in this repo is an example showing how one can trick
+Triple-O into deploying overcloud with routed (spine-leaf) networks on the
+isolated networks. This is done by utilizing the custom role feature
+introduced in Openstack Newton. One custom compute role is created per _leaf_
+each with a role specific nic-config template that configures the correct _ip,
+netmask and static routes_ on overcloud nodes.
 
 The **provisionin** network used for introspection and dhcp/pxe based provisioning must be a **single L2 broadcast domain**.
 
@@ -110,8 +116,9 @@ InternalApiIpSubnet parameter, as well as the network mask bits from
 the leaf specific cidr _InternalApiNetCidrLeaf1_ to assign correct
 ip interface address and netmask.
 
-Per leaf CIDR and parameter and leaf specific router parameter used
-to set up the required static routes.
+Per leaf cidr parameter _InternalApiNetCidrLeafX_ and leaf specific router
+parameter _InternalApiIpSubnetRouterLeaf0_ used to set up the required static
+routes.
 
 Example:
 ```
