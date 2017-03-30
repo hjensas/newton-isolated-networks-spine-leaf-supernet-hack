@@ -133,13 +133,13 @@ parameters:
     type: string
 
   InternalApiNetworkVlanIDLeaf0:
-    type: string
+    type: number
   TenantNetworkVlanIDLeaf0:
-    type: string
+    type: number
   StorageNetworkVlanIDLeaf0:
-    type: string
+    type: number
   ManagementNetworkVlanIDLeaf0:
-    type: string
+    type: number
 
 
 resources:
@@ -167,7 +167,7 @@ resources:
                   next_hop: {get_param: EC2MetadataIp}
             -
               type: ovs_bridge
-              name: {get_input: bridge_name}
+              name: 'br-ex'
               dns_servers: {get_param: DnsServers}
               members:
                 -
@@ -194,7 +194,7 @@ resources:
                         list_join:
                           - '/'
                           - - {str_split: ['/', {get_param: InternalApiIpSubnet}, 0]}
-                            - {str_split: ['/', {get_param: InternalApiNetCidrLeaf1}, 1]}
+                            - {str_split: ['/', {get_param: InternalApiNetCidrLeaf0}, 1]}
                   routes:
                     -
                       default: false
@@ -218,7 +218,7 @@ resources:
                         list_join:
                           - '/'
                           - - {str_split: ['/', {get_param: StorageIpSubnet}, 0]}
-                            - {str_split: ['/', {get_param: StorageNetCidrLeaf1}, 1]}
+                            - {str_split: ['/', {get_param: StorageNetCidrLeaf0}, 1]}
                   routes:
                     -
                       default: false
@@ -249,7 +249,7 @@ resources:
                         list_join:
                           - '/'
                           - - {str_split: ['/', {get_param: TenantIpSubnet}, 0]}
-                            - {str_split: ['/', {get_param: TenantNetCidrLeaf1}, 1]}
+                            - {str_split: ['/', {get_param: TenantNetCidrLeaf0}, 1]}
                   routes:
                     -
                       default: false
@@ -274,7 +274,7 @@ resources:
                         list_join:
                           - '/'
                           - - {str_split: ['/', {get_param: ManagementIpSubnet}, 0]}
-                            - {str_split: ['/', {get_param: ManagementNetCidrLeaf1}, 1]}
+                            - {str_split: ['/', {get_param: ManagementNetCidrLeaf0}, 1]}
                   routes:
                     -
                       default: false
