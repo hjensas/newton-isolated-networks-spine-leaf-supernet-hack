@@ -1,0 +1,135 @@
+# This template configures each role to use a pair of bonded nics (nic2 and
+# nic3) and configures an IP address on each relevant isolated network
+# for each role. This template assumes use of network-isolation.yaml.
+#
+# FIXME: if/when we add functionality to heatclient to include heat
+# environment files we should think about using it here to automatically
+# include network-isolation.yaml.
+resource_registry:
+  # 
+  # Network inteface configuration for each node type
+  #
+  #OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/controller.yaml
+  OS::TripleO::Leaf1Compute::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/leaf1-compute.yaml
+  OS::TripleO::Leaf2Compute::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/leaf2-compute.yaml
+  OS::TripleO::Leaf3Compute::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/leaf3-compute.yaml
+  #OS::TripleO::BlockStorage::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/cinder-storage.yaml
+  #OS::TripleO::ObjectStorage::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/swift-storage.yaml
+  #OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/network/nic-configs/ceph-storage.yaml
+
+parameter_defaults:
+  # This sets 'external_network_bridge' in l3_agent.ini to an empty string
+  # so that external networks act like provider bridge networks (they
+  # will plug into br-int instead of br-ex)
+  NeutronExternalNetworkBridge: "''"
+
+  ###
+  # Internal API networks
+  InternalApiNetCidr: 172.20.4.0/24
+  InternalApiAllocationPools: [{'start': '172.20.4.5', 'end': '172.20.4.6'}]
+
+  InternalApiNetCidrLeaf0: 172.20.4.0/26
+  InternalApiNetworkVlanIDLeaf0: 640
+  InternalApiIpSubnetRouterLeaf0: 172.20.4.62
+
+  InternalApiNetCidrLeaf1: 172.20.4.64/26
+  InternalApiNetworkVlanIDLeaf1: 641
+  InternalApiIpSubnetRouterLeaf1: 172.20.4.126
+
+  InternalApiNetCidrLeaf2: 172.20.4.128/26
+  InternalApiNetworkVlanIDLeaf2: 642
+  InternalApiIpSubnetRouterLeaf2: 172.20.4.190
+
+  InternalApiNetCidrLeaf3: 172.20.4.192/26
+  InternalApiNetworkVlanIDLeaf3: 643
+  InternalApiIpSubnetRouterLeaf3: 172.20.4.254
+
+  ###
+  # Tenant Networks
+  TenantNetCidr: 172.20.5.0/24
+  TenantAllocationPools: [{'start': '172.20.5.5', 'end': '172.20.5.6'}]
+
+  TenantNetCidrLeaf0: 172.20.5.0/26
+  TenantNetworkVlanIDLeaf0: 650
+  TenantIpSubnetRouterLeaf0: 172.20.5.62
+
+  TenantNetCidrLeaf1: 172.20.5.64/26
+  TenantNetworkVlanIDLeaf1: 651
+  TenantIpSubnetRouterLeaf1: 172.20.5.126
+
+  TenantNetCidrLeaf2: 172.20.5.128/26
+  TenantNetworkVlanIDLeaf2: 652
+  TenantIpSubnetRouterLeaf2: 172.20.5.190
+
+  TenantNetCidrLeaf3: 172.20.5.192/26
+  TenantNetworkVlanIDLeaf3: 653
+  TenantIpSubnetRouterLeaf3: 172.20.5.254
+
+  ###
+  # Storage Networks
+  StorageNetCidr: 172.20.6.0/24
+  StorageAllocationPools: [{'start': '172.20.6.5', 'end': '172.20.6.6'}]
+
+
+  StorageNetCidrLeaf0: 172.20.6.0/26
+  StorageNetworkVlanIDLeaf0: 660
+  StorageIpSubnetRouterLeaf0: 172.20.6.62
+
+  StorageNetCidrLeaf1: 172.20.6.64/26
+  StorageNetworkVlanIDLeaf1: 661
+  StorageIpSubnetRouterLeaf1: 172.20.6.126
+  
+  StorageNetCidrLeaf2: 172.20.6.128/26
+  StorageNetworkVlanIDLeaf2: 662
+  StorageIpSubnetRouterLeaf2: 172.20.6.190
+
+  StorageNetCidrLeaf3: 172.20.6.192/26
+  StorageNetworkVlanIDLeaf3: 663
+  StorageIpSubnetRouterLeaf3: 172.20.6.254
+
+  ###
+  # Storage Management network
+  StorageMgmtNetCidr: 172.20.7.0/26
+  StorageMgmtAllocationPools: [{'start': '172.20.7.5', 'end': '172.20.7.6'}]
+  StorageMgmtNetworkVlanID: 670
+
+  ###
+  # Management networks
+  ManagementNetCidr: 172.20.3.0/24
+  ManagementAllocationPools: [{'start': '172.20.3.5', 'end': '172.20.3.6'}]
+
+  # Need this for compatiblity with THT/network/management.yaml
+  ManagementInterfaceDefaultRoute: 172.20.3.62
+
+  ManagementNetCidrLeaf0: 172.20.3.0/26
+  ManagementNetworkVlanIDLeaf0: 630
+  ManagementInterfaceDefaultRouteLeaf0: 172.20.3.62
+
+  ManagementNetCidrLeaf1: 172.20.3.64/26
+  ManagementNetworkVlanIDLeaf1: 631
+  ManagementInterfaceDefaultRouteLeaf1: 172.20.3.126
+
+  ManagementNetCidrLeaf2: 172.20.3.128/26
+  ManagementNetworkVlanIDLeaf2: 632
+  ManagementInterfaceDefaultRouteLeaf2: 172.20.3.190
+
+  ManagementNetCidrLeaf3: 172.20.3.192/26
+  ManagementNetworkVlanIDLeaf3: 633
+  ManagementInterfaceDefaultRouteLeaf3: 172.20.3.254
+
+  ### 
+  # External networks
+  ExternalNetCidr: 172.20.1.0/26
+  ExternalAllocationPools: [{'start': '172.20.1.10', 'end': '172.20.1.30'}]
+  ExternalInterfaceDefaultRoute: 172.20.1.62
+  ExternalNetworkVlanID: 610
+
+  ###
+  # Control Plane Network
+  # Gateway router for the provisioning network (or Undercloud IP)
+  ControlPlaneDefaultRoute: 172.19.0.254
+  # The IP address of the EC2 metadata server. Generally the IP of the Undercloud
+  EC2MetadataIp: 172.19.0.1
+  # Define the DNS servers (maximum 2) for the overcloud nodes
+  DnsServers: ["172.19.0.254"]

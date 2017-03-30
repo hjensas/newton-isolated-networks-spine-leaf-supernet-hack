@@ -1,0 +1,275 @@
+heat_template_version: 2016-10-14
+
+description: >
+  Software Config to drive os-net-config with 1 nic on a bridge
+  with VLANs attached for the compute role.
+
+parameters:
+  ControlPlaneIp:
+    default: ''
+    description: IP address/subnet on the ctlplane network
+    type: string
+  ExternalIpSubnet:
+    default: ''
+    description: IP address/subnet on the external network
+    type: string
+  InternalApiIpSubnet:
+    default: ''
+    description: IP address/subnet on the internal API network
+    type: string
+  StorageIpSubnet:
+    default: ''
+    description: IP address/subnet on the storage network
+    type: string
+  StorageMgmtIpSubnet:
+    default: ''
+    description: IP address/subnet on the storage mgmt network
+    type: string
+  TenantIpSubnet:
+    default: ''
+    description: IP address/subnet on the tenant network
+    type: string
+  ManagementIpSubnet: # Only populated when including environments/network-management.yaml
+    default: ''
+    description: IP address/subnet on the management network
+    type: string
+  BondInterfaceOvsOptions:
+    default: ''
+    description: The ovs_options string for the bond interface. Set things like
+                 lacp=active and/or bond_mode=balance-slb using this option.
+    type: string
+  ControlPlaneSubnetCidr: # Override this via parameter_defaults
+    default: '24'
+    description: The subnet CIDR of the control plane network.
+    type: string
+  ControlPlaneDefaultRoute: # Override this via parameter_defaults
+    description: The default route of the control plane network.
+    type: string
+  DnsServers: # Override this via parameter_defaults
+    default: []
+    description: A list of DNS servers (2 max for some implementations) that will be added to resolv.conf.
+    type: comma_delimited_list
+  EC2MetadataIp: # Override this via parameter_defaults
+    description: The IP address of the EC2 metadata server.
+    type: string
+
+  InternalApiIpSubnetRouterLeaf0:
+    type: string
+  InternalApiIpSubnetRouterLeaf1:
+    type: string
+  InternalApiIpSubnetRouterLeaf2:
+    type: string
+  InternalApiIpSubnetRouterLeaf3:
+    type: string
+  TenantIpSubnetRouterLeaf0:
+    type: string
+  TenantIpSubnetRouterLeaf1:
+    type: string
+  TenantIpSubnetRouterLeaf2:
+    type: string
+  TenantIpSubnetRouterLeaf3:
+    type: string
+  StorageIpSubnetRouterLeaf0:
+    type: string
+  StorageIpSubnetRouterLeaf1:
+    type: string
+  StorageIpSubnetRouterLeaf2:
+    type: string
+  StorageIpSubnetRouterLeaf3:
+    type: string
+  ManagementInterfaceDefaultRouteLeaf0:
+    type: string
+  ManagementInterfaceDefaultRouteLeaf1:
+    type: string
+  ManagementInterfaceDefaultRouteLeaf2:
+    type: string
+  ManagementInterfaceDefaultRouteLeaf3:
+    type: string
+
+  InternalApiNetCidrLeaf0:
+    type: string
+  InternalApiNetCidrLeaf1:
+    type: string
+  InternalApiNetCidrLeaf2:
+    type: string
+  InternalApiNetCidrLeaf3:
+    type: string
+  StorageNetCidrLeaf0:
+    type: string
+  StorageNetCidrLeaf1:
+    type: string
+  StorageNetCidrLeaf2:
+    type: string
+  StorageNetCidrLeaf3:
+    type: string
+  TenantNetCidrLeaf0:
+    type: string
+  TenantNetCidrLeaf1:
+    type: string
+  TenantNetCidrLeaf2:
+    type: string
+  TenantNetCidrLeaf3:
+    type: string
+  ManagementNetCidrLeaf0:
+    type: string
+  ManagementNetCidrLeaf1:
+    type: string
+  ManagementNetCidrLeaf2:
+    type: string
+  ManagementNetCidrLeaf3:
+    type: string
+
+  InternalApiNetworkVlanIDLeaf2:
+    default: 20
+    description: Vlan ID for the internal_api network traffic.
+    type: number
+  StorageNetworkVlanIDLeaf2:
+    default: 30
+    description: Vlan ID for the storage network traffic.
+    type: number
+  TenantNetworkVlanIDLeaf2:
+    default: 50
+    description: Vlan ID for the tenant network traffic.
+    type: number
+  ManagementNetworkVlanIDLeaf2:
+    default: 60
+    description: Vlan ID for the management network traffic.
+    type: number
+
+
+resources:
+  OsNetConfigImpl:
+    type: OS::Heat::StructuredConfig
+    properties:
+      group: os-apply-config
+      config:
+        os_net_config:
+          network_config:
+            -
+              type: interface
+              name: nic1
+              use_dhcp: false
+              dns_servers: {get_param: DnsServers}
+              addresses:
+                -
+                  ip_netmask:
+                    list_join:
+                      - '/'
+                      - - {get_param: ControlPlaneIp}
+                        - {get_param: ControlPlaneSubnetCidr}
+              routes:
+                -
+                  ip_netmask: 169.254.169.254/32
+                  next_hop: {get_param: EC2MetadataIp}
+                -
+                  default: true
+                  next_hop: {get_param: ControlPlaneDefaultRoute}
+            -
+              type: ovs_bridge
+              name: {get_input: bridge_name}
+              members:
+                -
+                  type: interface
+                  name: nic2
+                -
+                  type: vlan
+                  device: nic2
+                  vlan_id: {get_param: InternalApiNetworkVlanIDLeaf2}
+                  addresses:
+                    -
+                      ip_netmask:
+                        list_join:
+                          - '/'
+                          - - {str_split: ['/', {get_param: InternalApiIpSubnet}, 0]}
+                            - {str_split: ['/', {get_param: InternalApiNetCidrLeaf2}, 1]}
+                  routes:
+                    -
+                      default: false
+                      ip_netmask: {get_param: InternalApiNetCidrLeaf0}
+                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: InternalApiNetCidrLeaf1}
+                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: InternalApiNetCidrLeaf3}
+                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf2}
+                      
+                -
+                  type: vlan
+                  device: nic2
+                  vlan_id: {get_param: StorageNetworkVlanIDLeaf2}
+                  addresses:
+                    -
+                      ip_netmask:
+                        list_join:
+                          - '/'
+                          - - {str_split: ['/', {get_param: StorageIpSubnet}, 0]}
+                            - {str_split: ['/', {get_param: StorageNetCidrLeaf2}, 1]}
+                  routes:
+                    -
+                      default: false
+                      ip_netmask: {get_param: StorageNetCidrLeaf0}
+                      next_hop: {get_param: StorageIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: StorageNetCidrLeaf1}
+                      next_hop: {get_param: StorageIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: StorageNetCidrLeaf3}
+                      next_hop: {get_param: StorageIpSubnetRouterLeaf2}
+                -
+                  type: vlan
+                  device: nic2
+                  vlan_id: {get_param: TenantNetworkVlanIDLeaf2}
+                  addresses:
+                    -
+                      ip_netmask:
+                        list_join:
+                          - '/'
+                          - - {str_split: ['/', {get_param: TenantIpSubnet}, 0]}
+                            - {str_split: ['/', {get_param: TenantNetCidrLeaf2}, 1]}
+                  routes:
+                    -
+                      default: false
+                      ip_netmask: {get_param: TenantNetCidrLeaf0}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: TenantNetCidrLeaf1}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: TenantNetCidrLeaf3}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf2}
+                -
+                  type: vlan
+                  device: nic2
+                  vlan_id: {get_param: ManagementNetworkVlanIDLeaf2}
+                  addresses:
+                    -
+                      ip_netmask:
+                        list_join:
+                          - '/'
+                          - - {str_split: ['/', {get_param: ManagementIpSubnet}, 0]}
+                            - {str_split: ['/', {get_param: ManagementNetCidrLeaf2}, 1]}
+                  routes:
+                    -
+                      default: false
+                      ip_netmask: {get_param: ManagementNetCidrLeaf0}
+                      next_hop: {get_param: ManagementInterfaceDefaultRouteLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: ManagementNetCidrLeaf1}
+                      next_hop: {get_param: ManagementInterfaceDefaultRouteLeaf2}
+                    -
+                      default: false
+                      ip_netmask: {get_param: ManagementNetCidrLeaf3}
+                      next_hop: {get_param: ManagementInterfaceDefaultRouteLeaf2}
+                 
+outputs:
+  OS::stack_id:
+    description: The OsNetConfigImpl resource.
+    value: {get_resource: OsNetConfigImpl}

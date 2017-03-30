@@ -1,0 +1,12 @@
+parameter_defaults:
+  ComputeCount: 0
+  Leaf1ComputeCount: 0
+  Leaf2ComputeCount: 0
+  Leaf3ComputeCount: 0
+  Leaf1ComputeSchedulerHints:
+    'capabilities:profile': 'leaf1-compute'
+  Leaf2ComputeSchedulerHints:
+    'capabilities:profile': 'leaf2-compute'
+  Leaf3ComputeSchedulerHints:
+    'capabilities:profile': 'leaf3-compute'
+

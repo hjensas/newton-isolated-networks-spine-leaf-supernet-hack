@@ -1,0 +1,38 @@
+heat_template_version: 2015-10-15
+
+description: >
+  Firstboot user_data to set root password for consol access
+
+parameters:
+  # Note this requires a liberty heat or newer in the undercloud due to
+  # the 2015-10-15 (which is required to enable str_replace serializing
+  # the json parameter to json, another approch with a string parameter
+  # will be required for older heat versions)
+  RootPassword:
+    type: string
+    default: {}
+    description: Root users password
+
+resources:
+  userdata:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: SetRootPassword}
+
+  SetRootPassword:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config:
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo "Setting root password"
+            echo '$root_password' | passwd --stdin root
+          params:
+            $root_password: {get_param: RootPassword}
+
+outputs:
+  OS::stack_id:
+    value: {get_resource: userdata}
+
