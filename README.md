@@ -56,7 +56,7 @@ Storage management network: 172.20.7.0/26
 
 Node             |  Leaf   |  Function (Role)
 ---------------- | ------- | -----------------------
-osp10-ctrl0      |  leaf1  |  Controller node
+osp10-ctrl0      |  leaf0  |  Controller node
 osp10-leaf1cmp0  |  leaf1  |  Compute node
 osp10-leaf2cmp0  |  leaf2  |  Compute node
 osp10-leaf3cmp0  |  leaf3  |  Compute node
