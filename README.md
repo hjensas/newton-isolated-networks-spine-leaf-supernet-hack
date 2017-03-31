@@ -9,7 +9,7 @@ introduced in Openstack Newton. One custom compute role is created per _leaf_
 each with a role specific nic-config template that configures the correct _ip,
 netmask and static routes_ on overcloud nodes.
 
-The **provisionin** network used for introspection and dhcp/pxe based provisioning must be a **single L2 broadcast domain**.
+The **provisioning** network used for introspection and dhcp/pxe based provisioning must be a **single L2 broadcast domain**.
 
 ## Limitations:
 * All ip subnets used as leafs must be a supernet, a portion of a larger network.
