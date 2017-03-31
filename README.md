@@ -9,7 +9,7 @@ introduced in Openstack Newton. One custom compute role is created per _leaf_
 each with a role specific nic-config template that configures the correct _ip,
 netmask and static routes_ on overcloud nodes.
 
-The **provisionin** network used for introspection and dhcp/pxe based provisioning must be a **single L2 broadcast domain**.
+The **provisioning** network used for introspection and dhcp/pxe based provisioning must be a **single L2 broadcast domain**.
 
 ## Limitations:
 * All ip subnets used as leafs must be a supernet, a portion of a larger network.
@@ -31,7 +31,7 @@ Internal API network: 172.20.4.0/24
   * 172.20.4.128/26 (Leaf2)
   * 172.20.4.192/26 (Leaf3)
 
-Tenant network: 172.20.5.0/25
+Tenant network: 172.20.5.0/24
 * Supernets:
   * 172.20.5.0/26   (Leaf0)
   * 172.20.5.64/26  (Leaf1)
@@ -111,14 +111,15 @@ Parameters for per network and leaf _router, VlanID and NetCidr_ are added.
 From these parameters, the _addresses_ and _static routes_ are templated.
 
 
-`str_split:` and `list_join:` is used to get the IP address from
-InternalApiIpSubnet parameter, as well as the network mask bits from
-the leaf specific cidr _InternalApiNetCidrLeaf1_ to assign correct
-ip interface address and netmask.
+A subset of the template is shown in the example below. The `str_split:` and
+`list_join:` functions are used to get the IP address from
+_InternalApiIpSubnet_ parameter and the network mask bits from
+the leaf specific cidr _InternalApiNetCidrLeaf1_ paramter. This data is then 
+combined to assign the correct ip interface address and netmask.
 
 Per leaf cidr parameter _InternalApiNetCidrLeafX_ and leaf specific router
-parameter _InternalApiIpSubnetRouterLeaf0_ used to set up the required static
-routes.
+parameter _InternalApiIpSubnetRouterLeaf0_ is used to set up the required
+static routes.
 
 Example:
 ```
