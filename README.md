@@ -113,13 +113,13 @@ From these parameters, the _addresses_ and _static routes_ are templated.
 
 A subset of the template is shown in the example below. The `str_split:` and
 `list_join:` functions are used to get the IP address from
-_InternalApiIpSubnet_ parameter, as well as the network mask bits from
-the leaf specific cidr _InternalApiNetCidrLeaf1_ to assign correct
-ip interface address and netmask.
+_InternalApiIpSubnet_ parameter and the network mask bits from
+the leaf specific cidr _InternalApiNetCidrLeaf1_ paramter. This data is then 
+combined to assign the correct ip interface address and netmask.
 
 Per leaf cidr parameter _InternalApiNetCidrLeafX_ and leaf specific router
-parameter _InternalApiIpSubnetRouterLeaf0_ used to set up the required static
-routes.
+parameter _InternalApiIpSubnetRouterLeaf0_ is used to set up the required
+static routes.
 
 Example:
 ```
