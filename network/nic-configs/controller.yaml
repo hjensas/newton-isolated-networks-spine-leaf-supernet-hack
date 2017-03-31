@@ -254,15 +254,15 @@ resources:
                     -
                       default: false
                       ip_netmask: {get_param: TenantNetCidrLeaf1}
-                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf0}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf0}
                     -
                       default: false
                       ip_netmask: {get_param: TenantNetCidrLeaf2}
-                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf0}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf0}
                     -
                       default: false
                       ip_netmask: {get_param: TenantNetCidrLeaf3}
-                      next_hop: {get_param: InternalApiIpSubnetRouterLeaf0}
+                      next_hop: {get_param: TenantIpSubnetRouterLeaf0}
                 -
                   type: vlan
                   name: nic2
