@@ -31,7 +31,7 @@ Internal API network: 172.20.4.0/24
   * 172.20.4.128/26 (Leaf2)
   * 172.20.4.192/26 (Leaf3)
 
-Tenant network: 172.20.5.0/25
+Tenant network: 172.20.5.0/24
 * Supernets:
   * 172.20.5.0/26   (Leaf0)
   * 172.20.5.64/26  (Leaf1)
