@@ -15,9 +15,9 @@ The **provisionin** network used for introspection and dhcp/pxe based provisioni
 * All ip subnets used as leafs must be a supernet, a portion of a larger network.
   * Neutron network on undercloud is configured with a single subnet, and has no knowledge that the subnet is actually split up into multiple supernets.
 * Predictable IP's are requiered to ensure each node is assigned an ip address in the correct supernet. (network/ips-from-pool-all.yaml)
-* Scalability is limited to the size of neutron networks, and the number of adjecent supernets available in the allocated ip network.
-* The external network must be configure to handle routing.
-* The external network must be configured to manage security.
+* Scalability is limited to the size of neutron networks, the number of adjecent supernets available.
+* The fabric network must be configure to handle the routing.
+* The fabric network must be configured to manage security.
   * ACL/Firewall is required in the routed fabric to ensure private networks are isolated.
 
 ## Architecture
