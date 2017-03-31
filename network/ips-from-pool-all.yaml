@@ -51,7 +51,7 @@ resource_registry:
 
 parameter_defaults:
   # Predictable Virtual IPs
-  ControlFixedIPs: [{'ip_address':'172.19.0.201'}]
+  ControlFixedIPs: [{'ip_address':'172.19.0.203'}]
   InternalApiVirtualFixedIPs: [{'ip_address':'172.20.4.10'}]
   PublicVirtualFixedIPs: [{'ip_address':'172.20.1.10'}]
   StorageVirtualFixedIPs: [{'ip_address':'172.20.6.10'}]
@@ -98,10 +98,10 @@ parameter_defaults:
     - 172.20.6.73
     - 172.20.6.74
     tenant:
-    - 172.20.7.71
-    - 172.20.7.72
-    - 172.20.7.73
-    - 172.20.7.74
+    - 172.20.5.71
+    - 172.20.5.72
+    - 172.20.5.73
+    - 172.20.5.74
     management:
     - 172.20.3.71
     - 172.20.3.72
@@ -120,10 +120,10 @@ parameter_defaults:
     - 172.20.6.133
     - 172.20.6.134
     tenant:
-    - 172.20.7.131
-    - 172.20.7.132
-    - 172.20.7.133
-    - 172.20.7.134
+    - 172.20.5.131
+    - 172.20.5.132
+    - 172.20.5.133
+    - 172.20.5.134
     management:
     - 172.20.3.131
     - 172.20.3.132
@@ -142,10 +142,10 @@ parameter_defaults:
     - 172.20.6.203
     - 172.20.6.204
     tenant:
-    - 172.20.7.201
-    - 172.20.7.202
-    - 172.20.7.203
-    - 172.20.7.204
+    - 172.20.5.201
+    - 172.20.5.202
+    - 172.20.5.203
+    - 172.20.5.204
     management:
     - 172.20.3.201
     - 172.20.3.202
